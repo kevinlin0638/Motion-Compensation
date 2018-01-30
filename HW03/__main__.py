@@ -19,8 +19,15 @@ def sequential_search(reference_arr):
     end = time.time()
     for ma in MAD_target:
         min = 9999999
-        
-
+        for i in range(-31, 31):
+            for j in range(-31, 31):
+                # 使用一個範圍去搜尋
+                temp = compare(parseblock(np.asarray(reference_arr), (ma[1]+j), (ma[2]+i)), ma[0])
+                if temp < min:
+                    min = temp
+                    x = j
+                    y = i
+        vector.append([y, x])
     end = time.time()
     use_time = (end - start)
     print('花費時間 :', use_time)
@@ -35,15 +42,7 @@ def logarithmic_search(reference_arr):
     end = time.time()
     for ma in MAD_target:
         min = 9999999
-        for i in range(-31, 31):
-            for j in range(-31, 31):
-                # 使用一個範圍去搜尋
-                temp = compare(parseblock(np.asarray(reference_arr), (ma[1] + j), (ma[2] + i)), ma[0])
-                if temp < min:
-                    min = temp
-                    x = j
-                    y = i
-        vector.append([y, x])
+        
     end = time.time()
     use_time = (end - start)
     print('花費時間 :', use_time)
