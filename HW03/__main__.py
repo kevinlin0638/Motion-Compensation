@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 import time
+import math
 MAD_target = []
 
 
@@ -8,7 +9,7 @@ def compare(target, compare):
     count = 0
     for i in range(16):
         for j in range(16):
-            count += int(compare[0][i][j]) - int(target[i][j])
+            count += abs(int(compare[0][i][j]) - int(target[i][j]))
     return count
 
 
@@ -40,13 +41,31 @@ def logarithmic_search(reference_arr):
     x, y = 0, 0
     start = time.time()
     end = time.time()
+
+
     for ma in MAD_target:
-        min = 9999999
-        
+        rx, ry = 0.0, 0.0
+        p = 31.0
+        while p >= 1.0:
+            min = 99999999
+            temp_rx, temp_ry = 0.0, 0.0
+            for i in np.arange((ry-p), (ry+p)+0.1, p/2):  # 加0.1來防止沒讀到最後一個數
+                for j in np.arange((rx-p), (rx+p)+0.1, p/2):
+                    temp = compare(parseblock(np.asarray(reference_arr), (ma[1] + math.floor(j)), (ma[2] + math.floor(i))), ma[0])
+                    if temp < min:
+                        min = temp
+                        x = math.floor(j)
+                        y = math.floor(i)
+                        temp_rx = j
+                        temp_ry = i
+            rx = temp_rx
+            ry = temp_ry
+            p = p/2
+        vector.append([y, x])
+
     end = time.time()
     use_time = (end - start)
     print('花費時間 :', use_time)
-    print('比較次數 :', 63 * 63 * len(MAD_target))
     return vector
 
 def openfile():
@@ -91,7 +110,10 @@ def parseblock(arr=[], startx=0, starty=0):
 
 if __name__ == '__main__':
     reference_arr = openfile()
-    vec_seq = sequential_search(reference_arr)
+    # vec_seq = sequential_search(reference_arr)
+    vec_logarithmic = logarithmic_search(reference_arr)
+    print(vec_logarithmic)
+
 
 
 
