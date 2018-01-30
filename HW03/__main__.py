@@ -108,11 +108,29 @@ def parseblock(arr=[], startx=0, starty=0):
     return mat
 
 
+def getpic(motion_vec):
+    arr = []
+    for i in range(240):
+        arr.append([0]*320)
+    for index, ma in enumerate(MAD_target):
+        for i in range(ma[1]+motion_vec[0][0], ma[1]+16):
+            for j in range(ma[2]+motion_vec[0][1], ma[2] + 16):
+                temp = ma[0]
+                if i > 320:
+                    i -= 320
+                if j > 240:
+                    j -= 240
+                arr[j][i] = temp[0][j+ma[2]][i+ma[1]]
+    newim = Image.fromarray(np.asarray(arr))
+    # 存檔
+    newim.save("Newccc.jpg")
+
+
 if __name__ == '__main__':
     reference_arr = openfile()
     # vec_seq = sequential_search(reference_arr)
     vec_logarithmic = logarithmic_search(reference_arr)
-    print(vec_logarithmic)
+    getpic(vec_logarithmic)
 
 
 
